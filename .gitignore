@@ -1,0 +1,73 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+.venv/
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtualenv
+venv/
+ENV/
+.venv/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# macOS
+.DS_Store
+
+# Logs and databases
+*.log
+*.sqlite3
+db.sqlite3
+
+# Django media
+media/
+
+# Env files
+.env
+.env.*
+
+# Coverage and test
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# PyCharm
+.idea/
+
+# Node
+node_modules/
+
+# celery
+celerybeat-schedule
+
+# build files
+build/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local python virtualenv
+.Python
+
+# Packaging
+pip-wheel-metadata/
+
+# Wheels
+*.whl
