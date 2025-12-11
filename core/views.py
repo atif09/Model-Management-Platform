@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Project, Dataset, Job
 from .serializers import ProjectSerializer, DatasetSerializer, JobSerializer
+from rest_framework import parsers
 
 # Create your views here.
 class IsOwnerOrReadOnly(IsAuthenticated):
@@ -33,7 +34,23 @@ class DatasetViewSet(viewsets.ModelViewSet):
   filterset_fields = ['project']
 
   def get_queryset(self):
+    # return only datasets for projects owned by the user
     return self.queryset.filter(project__owner=self.request.user)
+
+  def perform_create(self, serializer):
+    parser_class = [parsers.MultiPartParser, parsers.FormParser]
+    if not parser_class:
+      raise PermissionError("No file uploaded")
+    
+
+    project = serializer.validated_data['project']
+    if project.owner != self.request.user:
+      raise PermissionError("Cannot upload to a project you do not own")
+    
+    # serializer.create already saves file and metadata
+    serializer.save()
+
+
 
 
 class JobViewSet(viewsets.ModelViewSet):

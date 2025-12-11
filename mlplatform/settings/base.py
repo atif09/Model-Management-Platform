@@ -93,3 +93,11 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', cast=Csv())
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'  # BASE_DIR should be pathlib.Path
+
+
+
+
+

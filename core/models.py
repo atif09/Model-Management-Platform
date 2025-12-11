@@ -15,8 +15,13 @@ class Project(models.Model):
   
 class Dataset(models.Model):
   name = models.CharField(max_length=255)
-  file_path = models.CharField(max_length=512)
-  size = models.PositiveIntegerField()
+  file = models.FileField(upload_to='datasets/%Y/%m/%d/')
+  original_name = models.CharField(max_length=512, blank=True)
+  content_type = models.CharField(max_length=100, blank=True)
+  size = models.PositiveBigIntegerField(null=True, blank=True)
+  file_hash = models.CharField(max_length=64, unique=True, blank=True)  # SHA-256 hex
+  image_width = models.PositiveIntegerField(null=True, blank=True)
+  image_height = models.PositiveIntegerField(null=True, blank=True)
   uploaded_at = models.DateTimeField(auto_now_add=True)
   project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
