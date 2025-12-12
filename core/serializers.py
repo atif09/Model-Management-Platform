@@ -107,4 +107,42 @@ class JobSerializer(serializers.ModelSerializer):
   class Meta:
     model = Job
     fields = '__all__'
+    read_only_fields = ['status', 'created_at', 'result_data', 'progress', 'task_id', 'error_message']
+
+
+class JobSubmitSerializer(serializers.Serializer):
+  """
+    Serializer for submitting a new job.
+    
+    What it does:
+    - Validates user input when creating a job
+    - Checks that dataset_id exists
+    - Checks that job_type is valid
+    - Checks that target_format is provided for format conversion
+    
+    Expected input from user:
+    {
+        "dataset_id": 5,
+        "job_type": "validate_csv",
+        "target_format": ""  (optional)
+    }
+  """
+
+  dataset_id = serializers.IntegerField()
+  job_type = serializers.ChoiceField(
+    choices = ['validate_csv', 'process_image', 'generate_statistics', 'convert_file_format']
+  )
+  target_format = serializers.CharField(required=False, allow_blank=True)
+
+  def validate_dataset_id(self, value):
+    try:
+      dataset = Dataset.objects.get(id=value)
+    except Dataset.DoesNotExist:
+      raise serializers.ValidationError("Dataset with given ID does not exist.")
+  
+    return value
+  
+
+
+
 

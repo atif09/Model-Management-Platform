@@ -41,9 +41,42 @@ class Job(models.Model):
   project = models.ForeignKey(Project, on_delete=models.CASCADE)
   created_at = models.DateTimeField(auto_now_add=True)
   result_data = models.JSONField(null=True, blank=True)
+  progress = models.IntegerField(default=0)  # percentage from 0 to 100
+  task_id = models.CharField(max_length=255, blank=True)
+  error_message = models.TextField(blank=True)
+
+
 
   def __str__(self):
     return self.name
+  
+  def cancel_job(self):
+
+    """
+    Cancel a running job by stopping its Celery Task
+    What it does:
+    
+    1. Checks if job has task_id (was submitted to Celery)
+    2. Checks if job is still PROCESSING
+    3. Gets the celery task using task_id
+    4. Kills it immediately with terminate=True
+    5. Updates job status to CANCELLED
+
+    Returns: True if  cancelled, False if couldnt cancel
+    """
+
+    if self.task_id and self.status == 'PROCESSING':
+      from mlplatform.celery import app
+      celery_task = app.AsyncResult(self.task_id)
+      celery_task.revoke(terminate=True)
+      self.status = 'CANCELLED'
+      self.save()
+      return True
+    return False
+  
+  
+
+  
 
   
 
