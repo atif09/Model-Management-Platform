@@ -11,6 +11,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -107,5 +108,26 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
 
+# Use ASGI instead of WSGI
+ASGI_APPLICATION = 'mlplatform.asgi.application'
 
+# Channel Layers Configuration (Redis Backend)
+CHANNEL_LAYERS = {
+  'default': {
+    'BACKEND': 'channels_redis.core.RedisChannelLayer',
+    'CONFIG': {
+      'hosts': [(
+        '127.0.0.1', 6379 # Redis server address
+      )]
+    },
+  },
+}
 
+# Allow websocket connections from these origins
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*'] # In Production be more specific
+
+# CORS for Websocket
+CORS_ALLOWED_ORIGINS = [
+  'http://localhost:3000',
+  'http://localhost:8000',
+]
